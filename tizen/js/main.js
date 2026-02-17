@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'Universe': { img: 'assets/Lego universe.jpg', video: 'assets/Lego universe starwars.mp4', title: 'Universe' },
         'Space': { img: 'assets/space.png', video: 'assets/space.mp4', title: 'Space' },
         'Game': { img: 'assets/game.png', video: null, title: 'Game' },
-        'MyPhotos': { img: null, video: null, title: 'My Photos' } // New scene
+        'MyPhotos': { img: null, video: null, title: 'My Lego' } // New scene
     };
 
     // Navigation order
