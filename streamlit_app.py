@@ -130,30 +130,25 @@ st.markdown("<h1>🧱 My Lego Sets</h1>", unsafe_allow_html=True)
 tab1, tab2 = st.tabs(["📸 Add Photo", "🖼️ My Gallery"])
 
 with tab1:
-    st.markdown("### Capture Your Lego Collection")
+    st.markdown("### Upload Your Lego Photos")
     
-    col1, col2 = st.columns([1, 1])
-    
-    with col1:
-        # Camera input
-        camera_photo = st.camera_input("Take a photo")
-        
-    with col2:
-        # File uploader
-        uploaded_file = st.file_uploader("Or upload from device", type=['jpg', 'png', 'jpeg'])
+    # File uploader
+    uploaded_file = st.file_uploader(
+        "Choose a photo", 
+        type=['jpg', 'png', 'jpeg'],
+        help="Upload a photo of your Lego set"
+    )
     
     # Optional caption
     caption = st.text_input("Add a caption (optional)", placeholder="e.g., Millennium Falcon, City Fire Station...")
     
     # Submit button
     if st.button("📤 Add to Collection", type="primary", use_container_width=True):
-        photo_to_upload = camera_photo or uploaded_file
-        
-        if photo_to_upload:
+        if uploaded_file:
             with st.spinner("Saving to your collection..."):
                 try:
                     # Prepare file for upload
-                    files = {'file': photo_to_upload.getvalue()}
+                    files = {'file': uploaded_file.getvalue()}
                     data = {'caption': caption} if caption else {}
                     
                     # Upload to backend
