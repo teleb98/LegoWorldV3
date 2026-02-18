@@ -18,7 +18,7 @@ st.set_page_config(
 
 # Backend URL - reads from environment variable for Streamlit Cloud deployment
 # Set BACKEND_URL in Streamlit Cloud secrets or use localhost for local development
-BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:5000")
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:5001")
 
 # Custom CSS - Premium Lego Design
 st.markdown("""
@@ -271,17 +271,9 @@ with tab2:
                                 f"{BACKEND_URL}/api/photos/{photo['id']}",
                                 headers={'ngrok-skip-browser-warning': 'true'}
                             )
-                                    st.markdown('<span class="new-badge">NEW</span>', unsafe_allow_html=True)
-                            
-                            # Delete button
-                            if st.button("🗑️ Delete", key=f"del_{photo['id']}", use_container_width=True):
-                                del_response = requests.delete(
-                                    f"{BACKEND_URL}/api/photos/{photo['id']}",
-                                    headers={'ngrok-skip-browser-warning': 'true'}
-                                )
-                                if del_response.status_code == 200:
-                                    st.success("Deleted!")
-                                    st.rerun()
+                            if del_response.status_code == 200:
+                                st.success("Deleted!")
+                                st.rerun()
         else:
             st.error("Failed to fetch photos from server")
             
