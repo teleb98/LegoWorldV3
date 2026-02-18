@@ -1,0 +1,11 @@
+[phases.setup]
+nixPkgs = ["python313", "libjpeg", "zlib", "libpng", "freetype"]
+
+[phases.install]
+cmds = ["pip install -r requirements.txt"]
+
+[phases.build]
+cmds = []
+
+[start]
+cmd = "cd server && gunicorn app:app"
