@@ -10,8 +10,6 @@ import os
 import time
 from werkzeug.utils import secure_filename
 import google.generativeai as genai
-from PIL import Image
-import io
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for cross-origin requests
@@ -112,12 +110,12 @@ def get_db():
         return conn
 
 # AI Identification Function
-def identify_lego_with_ai(image_path_or_file):
+def identify_lego_with_ai(file_object):
     """
     Use Gemini Vision to identify LEGO set from image
     
     Args:
-        image_path_or_file: Either file path (str) or file object
+        file_object: File object (from request.files) or file path string
     
     Returns:
         str: Identified LEGO set name or None if failed
@@ -126,12 +124,6 @@ def identify_lego_with_ai(image_path_or_file):
         return None
     
     try:
-        # Open image
-        if isinstance(image_path_or_file, str):
-            img = Image.open(image_path_or_file)
-        else:
-            img = Image.open(image_path_or_file)
-        
         # Prepare prompt
         prompt = """Analyze this image and identify the LEGO set.
         
@@ -147,8 +139,22 @@ Examples:
 
 Keep the response concise and in English."""
         
-        # Generate content
-        response = model.generate_content([prompt, img])
+        # Gemini can accept file objects directly or file paths
+        # For file objects, read the bytes
+        if isinstance(file_object, str):
+            # File path - read file
+            with open(file_object, 'rb') as f:
+                image_data = f.read()
+        else:
+            # File object from request.files - read bytes
+            file_object.seek(0)  # Reset to beginning
+            image_data = file_object.read()
+        
+        # Upload to Gemini
+        image_part = {"mime_type": "image/jpeg", "data": image_data}
+        
+        # Generate content with prompt and image
+        response = model.generate_content([prompt, image_part])
         
         if response and response.text:
             identified_name = response.text.strip()
@@ -157,6 +163,8 @@ Keep the response concise and in English."""
         
     except Exception as e:
         print(f"❌ AI identification failed: {e}")
+        import traceback
+        traceback.print_exc()
     
     return None
 
